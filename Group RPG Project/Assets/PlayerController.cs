@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
     public float groundDistance;
 
     public LayerMask terrainLayer;
-    public Rigidbody rb;
-    public SpriteRenderer sr;
+    private Rigidbody rb;
+    private SpriteRenderer sr;
 
     private Vector2 moveInput;
 
@@ -32,29 +32,27 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         Vector3 castPosition = transform.position;
         castPosition.y += 0.1f;
-        if (Physics.Raycast(castPosition, -transform.up, out hit, Mathf.Infinity, terrainLayer))
-        {
-            if (hit.collider != null)
-            {
-                Vector3 movePosition = transform.position;
-                movePosition.y = hit.point.y + groundDistance;
-                transform.position = movePosition;
-            }
-        }
 
-        // NEW INPUT SYSTEM - Use stored input values
+        if (Physics.Raycast(castPosition, -transform.up, out hit, Mathf.Infinity, terrainLayer))
+    {
+        if (hit.collider != null)
+        {
+            Vector3 pos = transform.position;
+            pos.y = hit.point.y + groundDistance;
+            transform.position = pos;
+        }
+    }
+
+        // Movement
         float x = moveInput.x;
         float y = moveInput.y;
         Vector3 moveDir = new Vector3(x, 0, y);
-        rb.linearVelocity = moveDir * speed;
 
-        if (x != 0 && x < 0) //flip sprite depending on direction you move
-        {
-            sr.flipX = true;
-        }
-        else if (x != 0 && x > 0)
-        {
-            sr.flipX = false;
-        }
+        transform.position += moveDir * speed * Time.deltaTime;
+
+        // Sprite flipping
+        if (x < 0) sr.flipX = true;
+        else if (x > 0) sr.flipX = false;
+
     }
 }
