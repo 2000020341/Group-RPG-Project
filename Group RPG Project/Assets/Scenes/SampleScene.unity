@@ -1835,8 +1835,16 @@ MonoBehaviour:
   frontSprite: {fileID: 21300000, guid: 33f50a956234d4343b637e845a072eb5, type: 3}
   leftSprite: {fileID: 21300000, guid: 0d63349fb48e24bf1bdc5455de460a0d, type: 3}
   rightSprite: {fileID: 21300000, guid: 5737e3835abeb423f93c0f218f4f05a1, type: 3}
-  walkUpSprites: []
-  walkDownSprites: []
+  walkUpSprites:
+  - {fileID: 21300000, guid: 2d10c0b6d59cc406095d52461bfbcb02, type: 3}
+  - {fileID: 21300000, guid: f407b334f94274bb4a785127bfec1927, type: 3}
+  - {fileID: 21300000, guid: e5f9ea63145224a61b047d697f35d25b, type: 3}
+  - {fileID: 21300000, guid: 6e2ec224f9ea744eeacdfd59d9d2c564, type: 3}
+  walkDownSprites:
+  - {fileID: 21300000, guid: 195a2ea584bef469c958c989e63b04db, type: 3}
+  - {fileID: 21300000, guid: c4fdbd1f651ac45b0992d79e83652f21, type: 3}
+  - {fileID: 21300000, guid: 26a185ed6c9904ba7bf2a6af6fc23078, type: 3}
+  - {fileID: 21300000, guid: 35eb5136335894e4797dbcf76acaa61b, type: 3}
   walkRightSprites:
   - {fileID: 21300000, guid: 2e4316239354a4b50a84e49517f4d933, type: 3}
   - {fileID: 21300000, guid: e030ba0bc418b47949de7395dc85991e, type: 3}
