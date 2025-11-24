@@ -5,23 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
-
     [Tooltip("The movement speed of the character.")]
     public float speed = 5.0f;
 
     [Header("Directional Sprites")]
-    [Tooltip("Sprite to display when moving up.")]
     public Sprite backSprite;
-
-    [Tooltip("Sprite to display when moving down.")]
     public Sprite frontSprite;
-
-    [Tooltip("Sprite to display when moving left.")]
     public Sprite leftSprite;
-
-    [Tooltip("Sprite to display when moving right.")]
     public Sprite rightSprite;
-
 
     [Header("Walking Sprites")]
     public Sprite[] walkUpSprites;
@@ -32,86 +23,19 @@ public class PlayerController : MonoBehaviour
     public float walkFrameRate = 8f;
 
     [Header("Audio")]
-    [Tooltip("The sound effect for the character's footsteps.")]
     public AudioClip walkingSound;
 
-    private Animator animator;
-
     private const float deadZone = 0.1f;
+
     private Rigidbody rb;
     private SpriteRenderer sr;
     private AudioSource audioSource;
+
     private Vector3 moveInput;
+    private Vector3 lastMoveDirection = Vector3.forward;
 
     private float walkTimer = 0f;
     private int walkFrameIndex = 0;
-
-    private Vector3 lastMoveDirection = Vector3.forward;
-
-    private Sprite[] GetWalkSprites()
-    {
-        if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.z))
-        {
-            //Left-Right
-            if (moveInput.x > 0)
-            {
-                return walkRightSprites;
-            }
-            else
-            {
-                return walkLeftSprites;
-            }
-        }
-        else
-        {
-            //Up-Down
-            if (moveInput.z > 0)
-            {
-                return walkUpSprites;
-            }
-            else
-            {
-                return walkDownSprites;
-            }
-        }
-    }
-
-    private void UpdateWalkingAnimation()
-{
-    Sprite[] currentWalkSet = null;
-
-    // Pick the correct animation set based on direction:
-    if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.z))
-    {
-        // Horizontal movement
-        currentWalkSet = moveInput.x > 0 ? walkRightSprites : walkLeftSprites;
-    }
-    else
-    {
-        // Vertical movement
-        currentWalkSet = moveInput.z > 0 ? walkUpSprites : walkDownSprites;
-    }
-
-    if (currentWalkSet == null || currentWalkSet.Length == 0)
-        return; // No animation frames assigned
-
-    // Update animation frame timing
-    walkTimer += Time.deltaTime;
-
-    if (walkTimer >= 1f / walkFrameRate)
-    {
-        walkTimer = 0f;
-        walkFrameIndex++;
-
-        if (walkFrameIndex >= currentWalkSet.Length)
-            walkFrameIndex = 0;
-
-        sr.sprite = currentWalkSet[walkFrameIndex];
-    }
-}
-
-
-
 
     void Awake()
     {
@@ -121,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         if (sr == null)
         {
-            Debug.LogError("PlayerController could NOT find a SpriteRenderer in any child objects. Sprite switching will not work.");
+            Debug.LogError("PlayerController could NOT find a SpriteRenderer in any child objects.");
         }
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -129,7 +53,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Store input values in Update for use in other methods
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         moveInput = new Vector3(horizontalInput, 0, verticalInput);
@@ -138,66 +61,122 @@ public class PlayerController : MonoBehaviour
         {
             lastMoveDirection = moveInput;
         }
-
     }
 
     void FixedUpdate()
     {
-        // Apply physics-based movement in FixedUpdate
         rb.MovePosition(rb.position + moveInput.normalized * speed * Time.fixedDeltaTime);
     }
+
+    // -----------------------------------------------------------
+    // ANIMATION HELPERS
+    // -----------------------------------------------------------
+
+    private void PlayForcedWalkUpAnimation()
+    {
+        if (walkUpSprites == null || walkUpSprites.Length == 0)
+            return;
+
+        walkTimer += Time.deltaTime;
+
+        if (walkTimer >= 1f / walkFrameRate)
+        {
+            walkTimer = 0f;
+            walkFrameIndex++;
+
+            if (walkFrameIndex >= walkUpSprites.Length)
+                walkFrameIndex = 0;
+
+            sr.sprite = walkUpSprites[walkFrameIndex];
+        }
+    }
+
+    private void UpdateWalkingAnimation()
+    {
+        Sprite[] currentWalkSet = null;
+
+        // Pick animation based on movement direction
+        if (Mathf.Abs(moveInput.x) > Mathf.Abs(moveInput.z))
+        {
+            currentWalkSet = moveInput.x > 0 ? walkRightSprites : walkLeftSprites;
+        }
+        else
+        {
+            currentWalkSet = moveInput.z > 0 ? walkUpSprites : walkDownSprites;
+        }
+
+        if (currentWalkSet == null || currentWalkSet.Length == 0)
+            return;
+
+        walkTimer += Time.deltaTime;
+
+        if (walkTimer >= 1f / walkFrameRate)
+        {
+            walkTimer = 0f;
+            walkFrameIndex++;
+
+            if (walkFrameIndex >= currentWalkSet.Length)
+                walkFrameIndex = 0;
+
+            sr.sprite = currentWalkSet[walkFrameIndex];
+        }
+    }
+
+    // -----------------------------------------------------------
+    // MAIN ANIMATION LOGIC
+    // -----------------------------------------------------------
 
     void LateUpdate()
     {
         bool isMoving = moveInput.magnitude > deadZone;
 
-        // Handle visual and audio updates in LateUpdate
         if (isMoving)
         {
-            /** --- Sprite switching logic ---
-            if (sr != null)
-            {
-                if (Mathf.Abs(moveInput.x) > deadZone)
-                {
-                    if (moveInput.x > 0) sr.sprite = rightSprite;
-                    else sr.sprite = leftSprite;
-                }
-                else if (Mathf.Abs(moveInput.z) > deadZone)
-                {
-                    if (moveInput.z > 0) sr.sprite = backSprite;
-                    else sr.sprite = frontSprite;
-                }
-
-
-            }
-            **/
-            lastMoveDirection = moveInput;
-
-            // --- Audio logic ---
+            // AUDIO
             if (walkingSound != null && !audioSource.isPlaying)
             {
                 audioSource.clip = walkingSound;
                 audioSource.Play();
             }
-            UpdateWalkingAnimation();
-        }
-        else
-        {
-            // If not moving, stop the sound
-            if (audioSource.isPlaying)
-            {
-                audioSource.Stop();
-            }
 
-            if (Mathf.Abs(lastMoveDirection.x) > Mathf.Abs(lastMoveDirection.z))
+            // ANIMATIONS
+            if (CameraFollow.isRotating)
             {
-                sr.sprite = lastMoveDirection.x > 0 ? rightSprite : leftSprite;
+                // Force walk-up animation while rotating camera
+                PlayForcedWalkUpAnimation();
             }
             else
             {
-                sr.sprite = lastMoveDirection.z > 0 ? backSprite : frontSprite;
+                // Standard directional walking animation
+                UpdateWalkingAnimation();
+            }
+        }
+        else
+        {
+            // Stop walking audio
+            if (audioSource.isPlaying)
+                audioSource.Stop();
+
+            // IDLE ANIMATION
+            if (CameraFollow.isRotating)
+            {
+                // Idle always faces UP if camera is rotating
+                sr.sprite = backSprite;
+            }
+            else
+            {
+                // Normal idle face direction
+                if (Mathf.Abs(lastMoveDirection.x) > Mathf.Abs(lastMoveDirection.z))
+                {
+                    sr.sprite = lastMoveDirection.x > 0 ? rightSprite : leftSprite;
+                }
+                else
+                {
+                    sr.sprite = lastMoveDirection.z > 0 ? backSprite : frontSprite;
+                }
             }
 
+            // Reset walking animation frame
             walkFrameIndex = 0;
             walkTimer = 0f;
         }
