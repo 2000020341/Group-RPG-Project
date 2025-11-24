@@ -1967,7 +1967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   target: {fileID: 1230911747}
-  offset: {x: 0, y: 0, z: -6}
+  offset: {x: 0, y: 0, z: -4}
   smoothTime: 0.2
   rotateSpeed: 3
   minVerticalAngle: -10
