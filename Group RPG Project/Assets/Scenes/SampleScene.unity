@@ -543,8 +543,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   target: {fileID: 2076144725}
-  offset: {x: 0, y: 2, z: -5}
-  smoothTime: 0.2
+  offset: {x: 0, y: 0, z: -6}
+  smoothTime: 0.15
+  rotateSpeed: 6
+  minVerticalAngle: -10
+  maxVerticalAngle: 45
 --- !u!1001 &390960962
 PrefabInstance:
   m_ObjectHideFlags: 0
