@@ -545,6 +545,7 @@ MonoBehaviour:
   target: {fileID: 2076144725}
   offset: {x: 0, y: 2, z: -5}
   smoothTime: 0.2
+  rotateSpeed: 6
 --- !u!1001 &390960962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1358,6 +1359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1208886301}
   - component: {fileID: 1208886302}
+  - component: {fileID: 1208886303}
   m_Layer: 0
   m_Name: MCSprite
   m_TagString: Untagged
@@ -1438,6 +1440,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1208886303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208886300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70febcfd4581e4f80bda0ad4dfdad9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1001 &1226006533
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public class CameraFollow : MonoBehaviour
     public float smoothTime = 0.2f;
 
     public static bool isRotating = false;
-    public float rotateSpeed = 3f;
+    public float rotateSpeed = 6f;
 
     private float currentRotation = 0f;
     private Vector3 velocity = Vector3.zero;
